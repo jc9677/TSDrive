@@ -19,10 +19,23 @@
             
             try {
                 output.className = 'loading';
+                output.innerHTML = 'Loading Python environment...';
                 let pyodide = await loadPyodide();
                 
-                // Load our Python code
-                await pyodide.loadFile("main.py");
+                output.innerHTML = 'Loading NumPy package...';
+                await pyodide.loadPackage('numpy');
+                
+                output.innerHTML = 'Running Python code...';
+                // Define our Python functions
+                await pyodide.runPythonAsync(`
+def greet(name):
+    return f"Hello {name} from Python via WebAssembly!"
+
+def calculate_something():
+    import numpy as np
+    arr = np.array([1, 2, 3, 4, 5])
+    return f"Array sum: {np.sum(arr)}"
+                `);
                 
                 // Run our Python functions
                 let greeting = await pyodide.runPythonAsync(`greet("WebAssembly")`);
@@ -37,6 +50,7 @@
                 output.className = 'error';
                 output.innerHTML = `<p>Error: ${error.message || error}</p>
                     <p>Make sure you're running this from a web server and not directly from the file system.</p>`;
+                console.error(error);
             }
         }
         main();
