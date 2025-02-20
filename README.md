@@ -3,7 +3,7 @@
 This repository demonstrates running Python code in the browser using WebAssembly via Pyodide.
 
 ## Live Demo
-You can view the live demo at: `https://[your-github-username].github.io/[repository-name]/`
+You can view the live demo at: https://jc9677.github.io/TSDrive/
 
 ## Local Development
 To run this locally:
