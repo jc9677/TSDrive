@@ -3,27 +3,40 @@
 <head>
     <title>Python WebAssembly Example</title>
     <script src="https://cdn.jsdelivr.net/pyodide/v0.24.1/full/pyodide.js"></script>
+    <style>
+        .loading { color: #666; }
+        .error { color: #ff0000; }
+        .success { color: #008000; }
+    </style>
 </head>
 <body>
     <h1>Python WebAssembly Example</h1>
-    <div id="output"></div>
+    <div id="output">Loading Python environment...</div>
 
     <script>
         async function main() {
-            let pyodide = await loadPyodide();
             const output = document.getElementById('output');
             
-            // Load our Python code
-            await pyodide.loadFile("main.py");
-            
             try {
-                // Run our Python function
-                let result = await pyodide.runPythonAsync(`
-                    greet("WebAssembly")
-                `);
-                output.innerHTML += `<p>${result}</p>`;
+                output.className = 'loading';
+                let pyodide = await loadPyodide();
+                
+                // Load our Python code
+                await pyodide.loadFile("main.py");
+                
+                // Run our Python functions
+                let greeting = await pyodide.runPythonAsync(`greet("WebAssembly")`);
+                let calculation = await pyodide.runPythonAsync(`calculate_something()`);
+                
+                output.className = 'success';
+                output.innerHTML = `
+                    <p>${greeting}</p>
+                    <p>${calculation}</p>
+                `;
             } catch (error) {
-                output.innerHTML += `<p>Error: ${error}</p>`;
+                output.className = 'error';
+                output.innerHTML = `<p>Error: ${error.message || error}</p>
+                    <p>Make sure you're running this from a web server and not directly from the file system.</p>`;
             }
         }
         main();
