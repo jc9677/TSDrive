@@ -1,0 +1,32 @@
+<!DOCTYPE html>
+<html>
+<head>
+    <title>Python WebAssembly Example</title>
+    <script src="https://cdn.jsdelivr.net/pyodide/v0.24.1/full/pyodide.js"></script>
+</head>
+<body>
+    <h1>Python WebAssembly Example</h1>
+    <div id="output"></div>
+
+    <script>
+        async function main() {
+            let pyodide = await loadPyodide();
+            const output = document.getElementById('output');
+            
+            // Load our Python code
+            await pyodide.loadFile("main.py");
+            
+            try {
+                // Run our Python function
+                let result = await pyodide.runPythonAsync(`
+                    greet("WebAssembly")
+                `);
+                output.innerHTML += `<p>${result}</p>`;
+            } catch (error) {
+                output.innerHTML += `<p>Error: ${error}</p>`;
+            }
+        }
+        main();
+    </script>
+</body>
+</html>
